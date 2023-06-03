@@ -1,21 +1,50 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import auth from '@react-native-firebase/auth';
+import React, {useState, useEffect} from 'react';
+import {Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import Onboarding from './src/screens/auth/Onboarding';
-import SignIn from './src/screens/auth/SignIn';
-import SignUp from './src/screens/auth/SignUp';
-
-const Stack = createStackNavigator();
+import Routes from './src/Routes';
 
 const App = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
+
+  if (user) {
+    const logout = () => {
+      auth()
+        .signOut()
+        .then(() => console.log('User signed out!'));
+    };
+
+    return (
+      <>
+        <Text style={{margin: 40}}>Welcome</Text>
+        <Text onPress={logout} style={{borderWidth: 1, color: 'blue'}}>
+          {' '}
+          Logout
+        </Text>
+      </>
+    );
+  }
+
+  console.log('user', user);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: null}}>
-        <Stack.Screen name="Onboarding" component={Onboarding} />
-        <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-      </Stack.Navigator>
+      <Routes />
     </NavigationContainer>
   );
 };
