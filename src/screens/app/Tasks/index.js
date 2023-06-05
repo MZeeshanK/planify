@@ -1,9 +1,10 @@
 import React from 'react';
-import { SafeAreaView, Text, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 import styles from './styles';
 
 import Header from '../../../components/Header';
 import AddIcon from '../../../components/AddIcon';
+import Title from '../../../components/Title';
 
 const Tasks = () => {
   return (
@@ -11,7 +12,7 @@ const Tasks = () => {
       <Header title="Tasks" />
 
       <ScrollView>
-        <Text>Tasks</Text>
+        <Title type="thin">To Do Tasks</Title>
       </ScrollView>
 
       <AddIcon />
