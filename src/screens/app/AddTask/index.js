@@ -21,7 +21,11 @@ import firestore from '@react-native-firebase/firestore';
 
 import moment from 'moment';
 
+import { useSelector } from 'react-redux';
+
 const AddTask = ({ navigation }) => {
+  const user = useSelector(state => state.user.data);
+
   const [title, setTitle] = useState('');
   const [deadline, setDeadline] = useState(new Date());
   const [category, setCategory] = useState(null);
@@ -43,15 +47,15 @@ const AddTask = ({ navigation }) => {
 
     firestore()
       .collection('Tasks')
-      .doc('ABC')
-      .set({
+      .add({
         title,
         deadline,
         category,
+        checked: false,
+        user: user?.uid,
       })
       .then(() => {
         setLoading(false);
-        console.log('Task added!');
         navigation.navigate('Tasks');
         setTitle('');
         setDeadline(new Date());
